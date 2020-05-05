@@ -60,7 +60,6 @@ button
 {
     color: antiquewhite;
     background-color: white;
-    box-sizing: border-box;
     border: 1px solid white;
     border-radius: 100%;
     padding: 10px;
