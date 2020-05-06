@@ -1,16 +1,42 @@
+html
+{
+    zoom: 180%;
+}
+
 body
 {
-    background-color: #fff9e0;
+    --backgroundColor: #cefdf2;
+    --containerColor: antiquewhite;
+    --displayColor: #fbfeda;
+
+    --buttonColor: #f0ffc1;
+    --buttonBorderColor: var(--buttonColor);
+
+    --displayTextColor: #fdafbd;
+    --buttonTextColor: var(--displayTextColor);
+    --buttonTextHoveredColor: #0d00c4;
+    --displayTextBurnColor: #ff3ff7;
+    --buttonTextActiveColor: #ff00dd;
+
+    --shadowColor: #fcc9d2;
+
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(to bottom right, #fd7890, #20f8ff);
+    background-attachment: fixed;
+    /*background-color: var(--backgroundColor);*/
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .container
 {
-    color: antiquewhite;
+    /*background-image: linear-gradient(-90deg, purple, blue); */
+    color: var(--displayTextColor); 
     display: flex;
     flex-direction: column;
-    background-color: honeydew;
-    box-shadow: 7px 7px 8px 3px  #f7f1d7;
+    background-color: var(--containerColor);
+    box-shadow: 7px 7px 8px 3px  #ffcfee;
     border-radius: 12px;
     padding: 10px 15px 10px 15px;
     width: 150px;
@@ -21,7 +47,7 @@ body
 .display
 {
     display: flex;
-    background-color: white;
+    background-color: var(--displayColor);
     border-radius: 8px;
     box-shadow: 0px 0px 0px 0px;
     font-size: 18pt;
@@ -36,10 +62,9 @@ body
 
 button
 {
-
     margin: 1px;
     text-align: center;
-    transition: color 1.5s, transform 2s;
+    transition: color 3s, transform 1.5s;
 }
 
 .button-container
@@ -58,9 +83,9 @@ button
 
 .button-container > button
 {
-    color: antiquewhite;
-    background-color: white;
-    border: 1px solid white;
+    color: var(--buttonTextColor);
+    background-color: var(--buttonColor);
+    border: 1px solid var(--buttonBorderColor);
     border-radius: 100%;
     padding: 10px;
     margin: 0;
@@ -68,20 +93,26 @@ button
 
 button:hover
 {
-    color: #ab762b;
+    color: var(--buttonTextHoveredColor);
     transition: color 0.1s, transform 0.5s;
     transform: scale(1.2);
 }
 
 button:active
 {
-    color: #db8000;
+    color: var(--buttonTextActiveColor);
     transform: scale(1.2);
+}
+
+button:focus
+{
+    outline: none;
 }
 
 .clicked 
 {
-    color: #db8000!important;
+    transition: transform 1s, color 0.1s;
+    color: var(--buttonTextActiveColor)!important;
 }
 
 .done
@@ -91,26 +122,26 @@ button:active
 
 .white
 {
-    color: antiquewhite;
+    color: var(--displayTextColor);
     transition: color 1s, transform 1s;
 }
 
 .white:hover
 {
-    transform: scale(1.3);
+    transform: scale(1.2);
     transition: transform 0.1s, color 1s;
 }
 
 .burn 
 {
-    color: #db8000!important;
+    color: var(--displayTextBurnColor)!important;
 
     transition: color 3s;
 }
 
 .large
 {
-    transform: scale(1.1);
+    transform: scale(1.05);
     transition: transform 0.2s;
 }
 

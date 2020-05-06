@@ -4,40 +4,55 @@ const display = document.querySelector(".display");
 let input = [];
 let inputA = "";
 let inputB = "";
-let savedValue = 0;
 let operation = "none";
-let operating = false;
+let operating = false; // true if an operator has been activated
+let evaluated = false; // true if last user operation has been evaluated
 
 document.querySelectorAll(".digit").forEach(item => item.addEventListener("click", digitPress));
 document.querySelectorAll(".function").forEach(item => item.addEventListener("click", funcPress));
 document.querySelector(".equals").addEventListener("click", eval);
+document.querySelector(".decimal").addEventListener("click", digitPress);
+document.querySelector(".backspace").addEventListener("click", backspace);
 document.querySelector(".clear").addEventListener("click", clear);
 
 function digitPress(e)
 {
-    e.target.classList.add("clicked", "done");
+    if (evaluated)
+    {
+        evaluated = false;
+        clear();
+    }
     
-    setTimeout(function () { e.target.classList.remove("clicked") }, 1000);
-    setTimeout(function () { e.target.classList.remove("done") }, 2000);
+    clickedEffect(e);
     
-    if (input.length < 1 || display.textContent == "error")
+    if (input.length < 1 || display.textContent == "error" || display.textContent == "0")
     {
         display.textContent = "";
+        if (e.target.className.includes("decimal"))
+            display.textContent = "0";
     }
+    
+    if (e.target.className.includes("decimal"))
+    {
+        console.log("too many decimals!");
+        if (input.includes(".") || display.textContent.includes("."))
+            return;
+    }
+
     input.push(e.target.textContent);
     
-    if (input.length < 9)
+    if (input.length < 9 && display.textContent.length < 9)
     {
         let num = e.target.textContent;
         displayNumber(num);
     }
+    else return;
 
     console.log(e.target.className);
 }
 
 function displayNumber(num)
 {
-
     let div = document.createElement("div");
     div.textContent = num.toString(); 
     div.classList.add("burn", "white", "large");
@@ -47,30 +62,40 @@ function displayNumber(num)
     setTimeout(function() { div.classList.remove("large") }, 500);
 }
 
-function clear()
+function clear(e)
 {
+    if (e)
+        clickedEffect(e);
     display.textContent = "0";
+    operating = false;
+    evaluated = false;
     input = [];
     inputA = "";
     inputB = "";
+
+    document.querySelectorAll(".clicked").forEach( item =>
+        {
+            item.classList.add("done");
+            item.classList.remove("clicked");
+            setTimeout(function () { item.classList.remove("done") }, 2000)
+        });
 }
 
-function eval()
+function eval(e)
 {
-    if (operation == "none")       
-        return;
+    clickedEffect(e);
+
+    if (operation == "none" || inputA.length == 0 || input.length == 0 )       
+        return console.log(inputA.length, input.length, operation);
 
     if (display.textContent == "error")
         return clear();
-    
-    if (inputA.length == 0)
-        return;
     
     document.querySelector(".equals").classList.add("clicked");
 
     document.querySelectorAll(".clicked").forEach( item =>
     {
-        item.removeAttribute("clicked");
+
         item.classList.add("done");
         item.classList.remove("clicked");
         setTimeout(function () { item.classList.remove("done") }, 2000)
@@ -126,24 +151,44 @@ function eval()
     } 
 
     operating = false;
-    result = roundDecimals(result);
-    console.log("rounded", result);
+
+    if (result.toString().length > 7 && result % 1 !== 0)
+    {
+        let remainingSpace = 7 - Math.round(result).toString().length;
+        if (remainingSpace < 0)
+            remainingSpace = 0;
+        
+        result = roundDecimals(result, remainingSpace);
+        result.toFixed(remainingSpace);
+
+    }
+    else if (result.toString().length > 7)
+        result = result.toExponential(3);
+
+    
+    evaluated = true;
     input.push([result.toString()]);
     displayNumber(result);
 
-    console.log(input);
 }
 
 function funcPress(e)
 {
+    evaluated = false;
+
+    if (operating == true)
+        return;
+    
     operating = true;
 
     e.target.classList.add("clicked");
     let symbol = e.target.innerText;
     console.log(e.target.innerText);
+
     if (input.length == 0)
         inputA = "0";
     else inputA = input.join('');
+    console.log("inputA is", inputA);
 
     input = [];
 
@@ -171,9 +216,32 @@ function funcPress(e)
     }
 }
 
-function roundDecimals(a)
+function backspace()
 {
-    let pow = power(10, 7);
+    if (evaluated)
+        return;
+
+    if (display.textContent.length > 1)
+    {
+        display.textContent = display.textContent.slice(0, display.textContent.length - 1);
+        input.pop();
+    }
+    else display.textContent = "0";
+
+}
+
+function clickedEffect(e)
+{
+    e.target.classList.add("clicked", "done");
+
+    
+    setTimeout(function () { e.target.classList.remove("clicked") }, 1000);
+    setTimeout(function () { e.target.classList.remove("done") }, 2000);
+}
+
+function roundDecimals(a, b)
+{
+    let pow = power(10, b);
     return Math.round(a * pow) / pow;
 }
 
